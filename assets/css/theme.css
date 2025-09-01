@@ -1,0 +1,516 @@
+/* Stable full-bleed row (background spans viewport, content stays centered) */
+.bleed-row {
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100vw;
+  max-width: 100vw;
+  box-sizing: border-box;
+}
+
+/* --- Global 80% scaling (consistent across browsers) --- */
+/* Use zoom where supported (Chromium/WebKit desktop). */
+@supports (zoom: 1) {
+  body.theme-cashplay {
+    zoom: 0.8; /* 80% */
+  }
+}
+/* Fallback for browsers without zoom support (e.g., Firefox, iOS Safari). */
+@supports not (zoom: 1) {
+  /* Apply scale on body; compensate width/height to preserve viewport coverage. */
+  body.theme-cashplay {
+    transform: scale(0.8);
+    transform-origin: top left;
+    /* Compensate the scaled canvas so content fits without clipping */
+    width: 125%;
+    min-height: 125vh;
+  }
+  /* Prevent unexpected scrollbars due to scaling artifacts */
+  html { overflow-x: hidden; }
+}
+html { overflow-y: scroll; }
+body.is-home { overflow-x: hidden; }
+/* CashPlay Theme v1 - neon dark + glass + glow */
+:root {
+  --bg-0: #0b1020; /* deep navy */
+  --bg-1: #0f1530;
+  --bg-2: #151a3d;
+  --text-0: #e6ebff;
+  --text-1: #b9c2ff;
+  --muted: #8b93b7;
+
+  --primary: #6c5ce7; /* violet */
+  --primary-2: #8f7afe;
+  --secondary: #00e5ff; /* cyan */
+  --secondary-2: #00c2ff;
+  --accent: #ff4d6d; /* pink-red */
+  --success: #22c55e;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+}
+
+/* Recent Drops - wyśrodkowanie itemków */
+#recent-drops {
+  display: flex !important;
+  align-items: center !important;
+  min-height: 120px !important;
+}
+
+#recent-drops > div {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  align-items: center !important;
+  height: 100% !important;
+  min-height: 100px !important;
+
+  --glass: rgba(255, 255, 255, 0.06);
+  --glass-strong: rgba(255, 255, 255, 0.12);
+  --border: rgba(255, 255, 255, 0.15);
+  --shadow: rgba(3, 8, 20, 0.6);
+}
+
+/* Typography normalization to avoid scattered text */
+.theme-cashplay, .theme-cashplay * {
+  line-height: 1.5;
+  word-break: normal;
+  overflow-wrap: break-word;
+  hyphens: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Prevent buttons/links from awkward wrapping on icons */
+.theme-cashplay a, .theme-cashplay button {
+  white-space: normal;
+}
+
+/* Global background with layered gradients */
+body.theme-cashplay {
+  color: var(--text-0);
+  background:
+    radial-gradient(1200px 600px at 10% -10%, rgba(108, 92, 231, 0.18), transparent 60%),
+    radial-gradient(1000px 700px at 110% 10%, rgba(0, 229, 255, 0.15), transparent 60%),
+    radial-gradient(800px 500px at 50% 120%, rgba(255, 77, 109, 0.12), transparent 60%),
+    linear-gradient(180deg, var(--bg-0), var(--bg-1));
+  background-attachment: fixed;
+}
+
+/* Animacja tła wyłączona */
+
+/* Elevation & glass */
+.glass {
+  background: var(--glass);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid var(--border);
+  box-shadow: 0 10px 30px var(--shadow);
+}
+
+.card {
+  background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: 0 12px 40px var(--shadow);
+}
+
+.panel {
+  background: var(--glass);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+}
+
+/* Buttons */
+.btn-base {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .5rem;
+  padding: .65rem 1.1rem;
+  border-radius: 12px;
+  font-weight: 700;
+  letter-spacing: .02em;
+  color: white;
+  overflow: hidden;
+  transition: transform .2s ease, box-shadow .2s ease, filter .2s ease;
+}
+.btn-base:hover { transform: translateY(-1px); filter: brightness(1.02); }
+.btn-base:active { transform: translateY(0); filter: brightness(.98); }
+
+.btn-gradient-primary {
+  background: linear-gradient(90deg, var(--primary), var(--secondary));
+  box-shadow: 0 6px 20px rgba(108, 92, 231, .35), 0 4px 14px rgba(0, 229, 255, .25);
+}
+
+.btn-gradient-steam {
+  background: linear-gradient(90deg, #1b2838, #2a475e);
+  box-shadow: 0 6px 20px rgba(27, 40, 56, .45);
+}
+
+.btn-gradient-success {
+  background: linear-gradient(90deg, #16a34a, #22c55e);
+  box-shadow: 0 6px 20px rgba(34, 197, 94, .35);
+}
+
+.btn-outline-glow {
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.2);
+}
+
+/* Animated shine */
+.btn-shine::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, transparent, rgba(255,255,255,.25), transparent);
+  transform: translateX(-120%);
+  animation: shine 2.2s ease-in-out infinite;
+}
+@keyframes shine { 100% { transform: translateX(120%); } }
+
+/* Glow ring */
+.glow {
+  box-shadow: 0 0 0px rgba(255,255,255,0), 0 0 40px -8px var(--primary-2);
+}
+.glow:hover {
+  box-shadow: 0 0 0px rgba(255,255,255,0), 0 0 50px -8px var(--secondary);
+}
+
+/* Gradient borders */
+.gradient-border {
+  position: relative;
+}
+.gradient-border::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  z-index: -1;
+}
+
+/* Badges */
+.badge {
+  display: inline-flex; align-items: center; gap: .35rem;
+  padding: .25rem .6rem; border-radius: 9999px; font-weight: 700; font-size: .75rem;
+}
+.badge-success { background: rgba(34,197,94,.15); color: #34d399; border: 1px solid rgba(34,197,94,.35); }
+.badge-danger { background: rgba(239,68,68,.15); color: #f87171; border: 1px solid rgba(239,68,68,.35); }
+.badge-info { background: rgba(0,229,255,.15); color: #6ee7ff; border: 1px solid rgba(0,229,255,.35); }
+
+/* List / cards hover */
+.card-hover { transition: transform .25s ease, box-shadow .25s ease; }
+.card-hover:hover { transform: translateY(-4px); box-shadow: 0 16px 36px rgba(0,0,0,.45); }
+
+/* Nav enhancements */
+.nav-blur { background: rgba(15, 21, 48, .7); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255,255,255,.08); }
+.nav-underline a{ position: relative; }
+.nav-underline a::after{ content: ""; position: absolute; left: 0; right: 100%; bottom: -6px; height: 2px; background: linear-gradient(90deg, var(--primary), var(--secondary)); transition: right .3s ease; }
+.nav-underline a:hover::after{ right: 0; }
+
+/* Subtle float */
+.float { animation: float 6s ease-in-out infinite; }
+@keyframes float { 0%,100% { transform: translateY(0) } 50% { transform: translateY(-6px) } }
+
+/* Shimmer skeleton */
+.skeleton { position: relative; background: #1d2445; overflow: hidden; }
+.skeleton::after { content: ""; position: absolute; inset: 0; transform: translateX(-100%); background: linear-gradient(90deg, transparent, rgba(255,255,255,.08), transparent); animation: shimmer 1.6s infinite; }
+@keyframes shimmer { 100% { transform: translateX(100%); } }
+
+/* Tables */
+.table-modern { border-collapse: separate; border-spacing: 0 10px; }
+.table-modern tr { background: rgba(255,255,255,.03); }
+.table-modern tr:hover { background: rgba(255,255,255,.05); }
+.table-modern td, .table-modern th { padding: .85rem 1rem; }
+
+/* Inputs */
+.input-modern { background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.15); color: var(--text-0); border-radius: 12px; padding: .7rem .9rem; }
+.input-modern:focus { outline: none; border-color: var(--secondary); box-shadow: 0 0 0 3px rgba(0,229,255,.15); }
+
+/* Toasts (container already exists in app) */
+.toast-wow { border-left: 4px solid var(--secondary); background: rgba(15,21,48,.9); backdrop-filter: blur(8px); }
+
+/* Utility helpers to apply quickly on existing markup */
+.u-gradient-text { background: linear-gradient(90deg, var(--primary), var(--secondary)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.u-muted { color: var(--muted); }
+.u-divider { border-color: rgba(255,255,255,.08) !important; }
+
+/* Steam specific button color harmonized */
+.btn-steam {
+  background: linear-gradient(90deg, #1b2838, #2a475e);
+  color: #fff;
+}
+
+/* Deposit button vivid */
+.btn-deposit { background: linear-gradient(90deg, #10b981, #22d3ee); }
+
+/* Anim gradient bg (for hero sections) */
+.anim-gradient-bg {
+  background: linear-gradient(110deg, rgba(108,92,231,.25), rgba(0,229,255,.18), rgba(255,77,109,.20));
+  background-size: 200% 200%;
+  animation: gradientMove 12s ease infinite;
+}
+@keyframes gradientMove { 0% { background-position: 0% 50% } 50% { background-position: 100% 50% } 100% { background-position: 0% 50% } }
+
+/* --- Global overrides for legacy Tailwind classes to fit theme --- */
+.theme-cashplay .bg-white {
+  background: var(--glass) !important;
+  color: var(--text-0) !important;
+  border: 1px solid var(--border) !important;
+  box-shadow: 0 12px 40px var(--shadow) !important;
+}
+.theme-cashplay .text-gray-800 { color: var(--text-0) !important; }
+.theme-cashplay .text-gray-700 { color: var(--text-1) !important; }
+.theme-cashplay .text-gray-600 { color: var(--muted) !important; }
+.theme-cashplay .border-gray-200 { border-color: rgba(255,255,255,.12) !important; }
+.theme-cashplay .border-gray-300 { border-color: rgba(255,255,255,.16) !important; }
+.theme-cashplay .bg-gray-100 { background: rgba(255,255,255,.06) !important; }
+.theme-cashplay .bg-gray-200 { background: rgba(255,255,255,.08) !important; }
+.theme-cashplay .bg-gray-700 { background: rgba(15,21,48,.7) !important; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-color: rgba(255,255,255,.12) !important; }
+.theme-cashplay .bg-gray-800 { background: rgba(15,21,48,.65) !important; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-color: rgba(255,255,255,.12) !important; }
+.theme-cashplay .border-gray-700 { border-color: rgba(255,255,255,.12) !important; }
+
+/* Containers spacing helpers */
+.app-container {
+  max-width: 1400px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  overflow: visible; /* allow full-bleed children to extend */
+}
+@media (min-width: 768px){
+  .app-container { padding-left: 2rem; padding-right: 2rem; }
+}
+
+/* Full-bleed helper: stretch section to viewport width */
+.full-bleed {
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100vw;
+  max-width: 100vw;
+  padding-left: max(0px, env(safe-area-inset-left));
+  padding-right: max(0px, env(safe-area-inset-right));
+  overflow: visible;
+  box-sizing: border-box;
+}
+
+/* --- Inventory Drawer (Ekwipunek) --- */
+#inventory-drawer {
+  background: rgba(15, 21, 48, 0.88) !important;
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  border-top: 1px solid rgba(255,255,255,0.12) !important;
+  box-shadow: 0 10px 40px rgba(3, 8, 20, 0.6) !important;
+}
+
+/* Grid / list */
+#inventory-drawer .box-list {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 14px !important;
+  align-content: start !important;
+}
+
+/* NOWE KARTY: czysty, prosty kafelek */
+#inventory-drawer .gitem-small {
+  position: relative;
+  display: flex; flex-direction: column;
+  height: 172px !important;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.12);
+  box-shadow: 0 8px 26px rgba(3,8,20,.38);
+  overflow: hidden;
+  transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease;
+}
+#inventory-drawer .gitem-small:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 34px rgba(3,8,20,.5);
+}
+#inventory-drawer .gitem-small.selected {
+  outline: 2px solid rgba(168,85,247,.9);
+  outline-offset: 0;
+  border-color: rgba(168,85,247,.8);
+}
+/* wyłącz poprzednie efekty */
+#inventory-drawer .gitem-small::after { content: none !important; }
+
+/* Image/logo background */
+#inventory-drawer .image-logo {
+  display: grid; place-items: center; width: 100%; height: 84px;
+  background: rgba(0,0,0,0.22);
+  border-bottom: 1px solid rgba(255,255,255,0.10);
+}
+#inventory-drawer .image-logo img { max-width: 88%; max-height: 74%; filter: drop-shadow(0 6px 12px rgba(0,0,0,.45)); }
+
+/* Body */
+#inventory-drawer .item-info {
+  display: flex; flex-direction: column; gap: 6px;
+  padding: 10px 12px;
+}
+#inventory-drawer .item-weapon { font-size: 11px; color: var(--muted); margin: 0; letter-spacing: .01em; }
+#inventory-drawer .item-skin { font-size: 13px; font-weight: 800; color: var(--text-0); margin: 0; letter-spacing: .01em; line-height: 1.15; }
+#inventory-drawer .item-price {
+  display: inline-block;
+  font-size: 12px; font-weight: 700;
+  color: #22d3ee;
+  background: rgba(34,211,238,.12);
+  border: 1px solid rgba(34,211,238,.35);
+  border-radius: 8px;
+  padding: 3px 8px;
+}
+
+/* pasek akcentu rarity po lewej stronie */
+#inventory-drawer .gitem-small::before {
+  content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
+  background: transparent;
+}
+#inventory-drawer .gitem-small.rarity-common::before { background: linear-gradient(180deg,#9ca3af,#6b7280); }
+#inventory-drawer .gitem-small.rarity-uncommon::before { background: linear-gradient(180deg,#10b981,#065f46); }
+#inventory-drawer .gitem-small.rarity-rare::before { background: linear-gradient(180deg,#3b82f6,#1e40af); }
+#inventory-drawer .gitem-small.rarity-epic::before { background: linear-gradient(180deg,#9333ea,#5b21b6); }
+#inventory-drawer .gitem-small.rarity-legendary::before { background: linear-gradient(180deg,#f59e0b,#b45309); }
+#inventory-drawer .gitem-small.rarity-mythic::before { background: linear-gradient(180deg,#f43f5e,#9f1239); }
+
+/* Select bubble (top-right) – prościej */
+#inventory-drawer .box-select { position: absolute; right: 8px; top: 8px; z-index: 2; }
+#inventory-drawer .select-circle {
+  width: 18px; height: 18px; border-radius: 9999px; display: grid; place-items: center;
+  background: rgba(0,0,0,0.35); border: 1px solid rgba(255,255,255,0.2);
+}
+#inventory-drawer .gitem-small.selected .select-circle { background: rgba(168,85,247,.22); border-color: rgba(168,85,247,.7); }
+
+/* Rarity tints dla image (lżejsze) */
+#inventory-drawer .image-logo.rarity-common { background: linear-gradient(180deg, rgba(209,213,219,.14), rgba(31,41,55,.24)); }
+#inventory-drawer .image-logo.rarity-uncommon { background: linear-gradient(180deg, rgba(16,185,129,.16), rgba(31,41,55,.24)); }
+#inventory-drawer .image-logo.rarity-rare { background: linear-gradient(180deg, rgba(59,130,246,.16), rgba(31,41,55,.24)); }
+#inventory-drawer .image-logo.rarity-epic { background: linear-gradient(180deg, rgba(147,51,234,.18), rgba(31,41,55,.24)); }
+#inventory-drawer .image-logo.rarity-legendary { background: linear-gradient(180deg, rgba(245,158,11,.18), rgba(31,41,55,.24)); }
+#inventory-drawer .image-logo.rarity-mythic { background: linear-gradient(180deg, rgba(244,63,94,.18), rgba(31,41,55,.24)); }
+
+/* Opcjonalne badże */
+#inventory-drawer .quantity-badge {
+  position: absolute; left: 8px; top: 8px; z-index: 2;
+  background: rgba(0,0,0,.45);
+  border: 1px solid rgba(255,255,255,.25);
+  color: #fff; font-weight: 800; font-size: 11px;
+  padding: 2px 6px; border-radius: 9999px;
+}
+#inventory-drawer .rarity-badge {
+  position: absolute; left: 8px; top: 8px; z-index: 2;
+  background: rgba(168,85,247,.2);
+  border: 1px solid rgba(216,180,254,.45);
+  color: #e9d5ff; font-weight: 800; font-size: 10px; letter-spacing: .03em;
+  padding: 2px 6px; border-radius: 6px;
+}
+
+/* Empty state */
+#inventory-empty { opacity: .8; }
+
+/* Toolbar controls */
+#inventory-drawer select,
+#inventory-drawer input[type="text"],
+#inventory-drawer .toolbar-btn {
+  background: rgba(255,255,255,0.06) !important;
+  border: 1px solid rgba(255,255,255,0.18) !important;
+  color: var(--text-0) !important;
+}
+
+/* Scrollbar for inventory list */
+#inventory-grid::-webkit-scrollbar { width: 10px; }
+#inventory-grid::-webkit-scrollbar-thumb { background: rgba(255,255,255,.15); border-radius: 8px; }
+#inventory-grid::-webkit-scrollbar-track { background: rgba(255,255,255,.06); }
+
+@media (max-width: 640px) {
+  #inventory-drawer .box-list { grid-template-columns: repeat(auto-fill, minmax(132px, 1fr)); }
+  #inventory-drawer .gitem-small { height: 160px !important; }
+  #inventory-drawer .image-logo { height: 80px; }
+}
+
+/* ==== HARD OVERRIDE: LIST LAYOUT (remove cards entirely) ==== */
+#inventory-drawer .box-list {
+  display: block !important;
+}
+#inventory-drawer .box-list .gitem-small {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  height: 64px !important;
+  padding: 8px 12px !important;
+  margin: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 8px !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+#inventory-drawer .box-list .gitem-small + .gitem-small { border-top: 1px solid rgba(255,255,255,.08) !important; }
+#inventory-drawer .box-list .gitem-small.selected { outline: none !important; border-color: transparent !important; }
+#inventory-drawer .box-list .gitem-small::before { display: none !important; }
+
+#inventory-drawer .box-list .image-logo {
+  width: 56px !important; height: 56px !important;
+  min-width: 56px !important;
+  background: transparent !important;
+  border: 0 !important;
+}
+#inventory-drawer .box-list .image-logo img { max-width: 100% !important; max-height: 100% !important; filter: drop-shadow(0 3px 8px rgba(0,0,0,.35)); }
+
+#inventory-drawer .box-list .item-info {
+  padding: 0 !important;
+  display: flex !important; flex-direction: column !important;
+  gap: 2px !important; flex: 1 1 auto !important;
+}
+#inventory-drawer .box-list .item-weapon { font-size: 11px !important; margin: 0 !important; color: var(--muted) !important; }
+#inventory-drawer .box-list .item-skin { font-size: 13px !important; margin: 0 !important; font-weight: 800 !important; color: var(--text-0) !important; }
+
+#inventory-drawer .box-list .item-price {
+  margin-left: auto !important;
+  font-size: 12px !important; font-weight: 800 !important;
+  color: #22d3ee !important;
+  background: transparent !important;
+  border: 0 !important;
+  padding: 0 !important;
+}
+
+#inventory-drawer .box-select,
+#inventory-drawer .select-circle { display: none !important; }
+
+/* neutralize rarity backgrounds on image */
+#inventory-drawer .image-logo[class*="rarity-"] { background: transparent !important; }
+
+@media (max-width: 640px) {
+  #inventory-drawer .box-list .gitem-small { height: 60px !important; padding: 8px 10px !important; }
+  #inventory-drawer .box-list .image-logo { width: 52px !important; height: 52px !important; min-width: 52px !important; }
+}
+
+/* ==== HIDE ALL INVENTORY CARDS COMPLETELY ==== */
+/* #inventory-drawer .gitem-small,
+#inventory-items .gitem-small {
+  display: none !important;
+} */
+
+/* ==== Item Slider Animation for case.php ==== */
+@keyframes scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    /* (width of item + margin) * number of original items */
+    /* (192px + 16px) * N -- assuming N is the number of items before duplication */
+    /* This will be calculated dynamically if needed, but for a seamless loop with duplicated items, we can use a large value */
+    transform: translateX(calc(-208px * 20)); /* Adjust 20 to the number of original items */
+  }
+}
+
+.animate-scroll {
+  /* Adjust duration for speed */
+  animation: scroll 40s linear infinite;
+}
+
+.group:hover .animate-scroll {
+  animation-play-state: paused;
+}

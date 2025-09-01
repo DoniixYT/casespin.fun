@@ -1,0 +1,6 @@
+# HTID:22833157: DO NOT REMOVE OR MODIFY THIS LINE AND THE LINES BELOW
+php_value display_errors 1
+# DO NOT REMOVE OR MODIFY THIS LINE AND THE LINES ABOVE HTID:22833157:
+
+# Serve Web App Manifest with correct MIME type
+AddType application/manifest+json .webmanifest
